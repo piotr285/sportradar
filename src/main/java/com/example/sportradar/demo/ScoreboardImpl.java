@@ -1,26 +1,38 @@
 package com.example.sportradar.demo;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ScoreboardImpl implements Scoreboard {
-    public List<Game> gameList; //wicej dodawania/usuwania czy przeglądania?
+    private List<Game> gameList; //wicej dodawania/usuwania czy przeglądania?
 
     public ScoreboardImpl(List<Game> gameList) {
         this.gameList = gameList;
     }
 
     @Override
-    public void startGame() {
-
+    public UUID startGame(TeamStat home, TeamStat away) {
+        Game newGame = new Game(home, away);
+        gameList.add(newGame);
+        return newGame.getUniqueGameId();
     }
 
     @Override
-    public void finishGame() {
-
+    public Game finishGame(UUID gameId) {
+        Optional<Game> gameExists = gameList.stream()
+                .filter(game -> game.getUniqueGameId().equals(gameId))
+                .findAny();
+        if (gameExists.isPresent()) {
+            gameList.remove(gameExists.get());
+            return gameExists.get();
+        }
+        //todo jakiś wyjątek??
+        return null;
     }
 
     @Override
-    public void updateScore() {
+    public void updateScore(Game game) {
         //receiving pair score
     }
 
