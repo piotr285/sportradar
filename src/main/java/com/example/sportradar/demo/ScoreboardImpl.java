@@ -1,18 +1,19 @@
 package com.example.sportradar.demo;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class ScoreboardImpl implements Scoreboard {
-    private List<Game> gameList; //wicej dodawania/usuwania czy przeglądania?
+    private List<Game> gameList;
 
     public ScoreboardImpl(List<Game> gameList) {
         this.gameList = gameList;
     }
 
     @Override
-    public UUID startGame(TeamStat home, TeamStat away) {
+    public UUID startGame(Team home, Team away) {
         Game newGame = new Game(home, away);
         gameList.add(newGame);
         return newGame.getUniqueGameId();
@@ -28,15 +29,15 @@ public class ScoreboardImpl implements Scoreboard {
     @Override
     public void updateScore(UUID gameId, int homeScore, int awayScore) throws GameNotPresentException {
         Game game = findGameById(gameId);
-        game.getHomeTeam().setScore(homeScore);
-        game.getAwayTeam().setScore(awayScore);
+        game.getScore().updateScore(homeScore, awayScore);
     }
 
     @Override
     public List<Game> getSummaryByTotalScore() {
-        //Those games with the same total score
-        //will be returned ordered by the most recently added to our system
-        return gameList;
+        return gameList.stream()
+                .sorted(Comparator.comparing(Game::getScore, Comparator.comparingInt(Score::getSum))
+                        .thenComparing(Game:: getTimeAdded).reversed())
+                .toList();
     }
 
     private Game findGameById(UUID gameId) throws GameNotPresentException {

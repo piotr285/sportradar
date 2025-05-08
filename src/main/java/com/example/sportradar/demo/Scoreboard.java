@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface Scoreboard {
 
-    UUID startGame(TeamStat home, TeamStat away);
+    UUID startGame(Team home, Team away);
     Game finishGame(UUID gameId) throws GameNotPresentException;
     void updateScore(UUID gameId, int homeScore, int awayScore) throws GameNotPresentException;
     List<Game> getSummaryByTotalScore();

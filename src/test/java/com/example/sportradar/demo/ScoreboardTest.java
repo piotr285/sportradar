@@ -11,12 +11,12 @@ public class ScoreboardTest {
 
     @Test
     public void startGameTest() {
-        int startingScore =0;
+        int startingScore = 0;
         String uruguayName = "Uruguay";
         String brazilName = "Brazil";
-        TeamStat uruguay = new TeamStat(uruguayName);
-        TeamStat brazil = new TeamStat(brazilName);
-        ScoreboardImpl scoreboard = new ScoreboardImpl( new ArrayList<>());
+        Team uruguay = new Team(uruguayName);
+        Team brazil = new Team(brazilName);
+        ScoreboardImpl scoreboard = new ScoreboardImpl(new ArrayList<>());
 
         UUID startedGameId = scoreboard.startGame(uruguay, brazil);
         List<Game> currentList = scoreboard.getSummaryByTotalScore();
@@ -24,21 +24,21 @@ public class ScoreboardTest {
         Assertions.assertEquals(1, currentList.size());
         Assertions.assertEquals(brazilName, currentList.get(0).getAwayTeam().getName());
         Assertions.assertEquals(startedGameId, currentList.get(0).getUniqueGameId());
-        Assertions.assertEquals(currentList.get(0).getHomeTeam().getScore(), currentList.get(0).getAwayTeam().getScore());
-        Assertions.assertEquals(startingScore, currentList.get(0).getHomeTeam().getScore());
+        Assertions.assertEquals(currentList.get(0).getScore().getHomeScore(), currentList.get(0).getScore().getAwayScore());
+        Assertions.assertEquals(startingScore, currentList.get(0).getScore().getHomeScore());
     }
 
     @Test
     public void finishGameTest() throws GameNotPresentException {
         String uruguayName = "Uruguay";
         String brazilName = "Brazil";
-        TeamStat uruguay = new TeamStat(uruguayName);
-        TeamStat brazil = new TeamStat(brazilName);
-        ScoreboardImpl scoreboard = new ScoreboardImpl( new ArrayList<>());
+        Team uruguay = new Team(uruguayName);
+        Team brazil = new Team(brazilName);
+        ScoreboardImpl scoreboard = new ScoreboardImpl(new ArrayList<>());
 
         UUID startedGameId = scoreboard.startGame(uruguay, brazil);
-        List<Game> currentList = scoreboard.getSummaryByTotalScore();
         scoreboard.finishGame(startedGameId);
+        List<Game> currentList = scoreboard.getSummaryByTotalScore();
 
         Assertions.assertTrue(currentList.isEmpty());
     }
@@ -47,37 +47,45 @@ public class ScoreboardTest {
     public void updateGameTest() throws GameNotPresentException {
         String uruguayName = "Uruguay";
         String brazilName = "Brazil";
-        TeamStat uruguay = new TeamStat(uruguayName);
-        TeamStat brazil = new TeamStat(brazilName);
-        ScoreboardImpl scoreboard = new ScoreboardImpl( new ArrayList<>());
+        Team uruguay = new Team(uruguayName);
+        Team brazil = new Team(brazilName);
+        ScoreboardImpl scoreboard = new ScoreboardImpl(new ArrayList<>());
 
         UUID startedGameId = scoreboard.startGame(uruguay, brazil);
         List<Game> currentList = scoreboard.getSummaryByTotalScore();
-        int homeScore =4;
-        int awayScore =3;
+        int homeScore = 4;
+        int awayScore = 3;
         scoreboard.updateScore(startedGameId, homeScore, awayScore);
 
         Assertions.assertEquals(1, currentList.size());
         Assertions.assertEquals(brazilName, currentList.get(0).getAwayTeam().getName());
         Assertions.assertEquals(startedGameId, currentList.get(0).getUniqueGameId());
-        Assertions.assertEquals(homeScore, currentList.get(0).getHomeTeam().getScore());
-        Assertions.assertEquals(awayScore, currentList.get(0).getAwayTeam().getScore());
+        Assertions.assertEquals(homeScore, currentList.get(0).getScore().getHomeScore());
+        Assertions.assertEquals(awayScore, currentList.get(0).getScore().getAwayScore());
     }
 
-//    @Test
-//    public void getSummaryTest() {
-//        ScoreboardImpl scoreboard = new ScoreboardImpl( new ArrayList<>());
-//        scoreboard.startGame("Uruguay", "Italy"));
-//        scoreboard.startGame("Spain", "Brazil"));
-//        scoreboard.startGame("Mexico", "Canada"));
-//        scoreboard.startGame("Argentina", "Australia"));
-//        scoreboard.startGame("Germany", "France"));
-//        //todo : dokończyć po implementacji reszty metod
-//    }
+    @Test
+    public void getSummaryTest() throws GameNotPresentException {
+        ScoreboardImpl scoreboard = new ScoreboardImpl(new ArrayList<>());
+        UUID game1 = scoreboard.startGame(new Team("Uruguay"), new Team("Italy"));
+        UUID game2 = scoreboard.startGame(new Team("Spain"), new Team("Brazil"));
+        UUID game3 = scoreboard.startGame(new Team("Mexico"), new Team("Canada"));
+        UUID game4 = scoreboard.startGame(new Team("Argentina"), new Team("Australia"));
+        UUID game5 = scoreboard.startGame(new Team("Germany"), new Team("France"));
 
-    private Game prepareGame(String homeTeam, String awayTeam) {
-        TeamStat home = new TeamStat(homeTeam);
-        TeamStat away = new TeamStat(awayTeam);
-        return new Game(home, away);
+        scoreboard.updateScore(game1, 0, 5);
+        scoreboard.updateScore(game2, 2, 2);
+        scoreboard.updateScore(game3, 6, 6);
+        scoreboard.updateScore(game4, 3, 1);
+        scoreboard.updateScore(game5, 10, 2);
+
+        List<Game> result = scoreboard.getSummaryByTotalScore();
+
+        Assertions.assertEquals(game5, result.get(0).getUniqueGameId());
+        Assertions.assertEquals(game3, result.get(1).getUniqueGameId());
+        Assertions.assertEquals(game1, result.get(2).getUniqueGameId());
+        Assertions.assertEquals(game4, result.get(3).getUniqueGameId());
+        Assertions.assertEquals(game2, result.get(4).getUniqueGameId());
     }
+
 }
