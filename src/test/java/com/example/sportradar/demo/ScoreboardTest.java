@@ -29,7 +29,7 @@ public class ScoreboardTest {
     }
 
     @Test
-    public void finishGameTest() {
+    public void finishGameTest() throws GameNotPresentException {
         String uruguayName = "Uruguay";
         String brazilName = "Brazil";
         TeamStat uruguay = new TeamStat(uruguayName);
@@ -41,6 +41,27 @@ public class ScoreboardTest {
         scoreboard.finishGame(startedGameId);
 
         Assertions.assertTrue(currentList.isEmpty());
+    }
+
+    @Test
+    public void updateGameTest() throws GameNotPresentException {
+        String uruguayName = "Uruguay";
+        String brazilName = "Brazil";
+        TeamStat uruguay = new TeamStat(uruguayName);
+        TeamStat brazil = new TeamStat(brazilName);
+        ScoreboardImpl scoreboard = new ScoreboardImpl( new ArrayList<>());
+
+        UUID startedGameId = scoreboard.startGame(uruguay, brazil);
+        List<Game> currentList = scoreboard.getSummaryByTotalScore();
+        int homeScore =4;
+        int awayScore =3;
+        scoreboard.updateScore(startedGameId, homeScore, awayScore);
+
+        Assertions.assertEquals(1, currentList.size());
+        Assertions.assertEquals(brazilName, currentList.get(0).getAwayTeam().getName());
+        Assertions.assertEquals(startedGameId, currentList.get(0).getUniqueGameId());
+        Assertions.assertEquals(homeScore, currentList.get(0).getHomeTeam().getScore());
+        Assertions.assertEquals(awayScore, currentList.get(0).getAwayTeam().getScore());
     }
 
 //    @Test

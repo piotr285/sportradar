@@ -19,21 +19,17 @@ public class ScoreboardImpl implements Scoreboard {
     }
 
     @Override
-    public Game finishGame(UUID gameId) {
-        Optional<Game> gameExists = gameList.stream()
-                .filter(game -> game.getUniqueGameId().equals(gameId))
-                .findAny();
-        if (gameExists.isPresent()) {
-            gameList.remove(gameExists.get());
-            return gameExists.get();
-        }
-        //todo jakiś wyjątek??
-        return null;
+    public Game finishGame(UUID gameId) throws GameNotPresentException { //todo ogarnąć wyjątki
+        Game game = findGameById(gameId);
+        gameList.remove(game);
+        return game;
     }
 
     @Override
-    public void updateScore(Game game) {
-        //receiving pair score
+    public void updateScore(UUID gameId, int homeScore, int awayScore) throws GameNotPresentException {
+        Game game = findGameById(gameId);
+        game.getHomeTeam().setScore(homeScore);
+        game.getAwayTeam().setScore(awayScore);
     }
 
     @Override
@@ -41,5 +37,14 @@ public class ScoreboardImpl implements Scoreboard {
         //Those games with the same total score
         //will be returned ordered by the most recently added to our system
         return gameList;
+    }
+
+    private Game findGameById(UUID gameId) throws GameNotPresentException {
+        Optional<Game> gameExists = gameList.stream()
+                .filter(game -> game.getUniqueGameId().equals(gameId))
+                .findAny();
+        if (gameExists.isPresent()) {
+            return gameExists.get();
+        } else throw new GameNotPresentException();
     }
 }
