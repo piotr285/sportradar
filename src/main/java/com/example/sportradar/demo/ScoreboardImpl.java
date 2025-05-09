@@ -1,5 +1,9 @@
 package com.example.sportradar.demo;
 
+import com.example.sportradar.demo.exceptions.GameNotPresentException;
+import com.example.sportradar.demo.exceptions.NegativeScoreException;
+
+import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -20,23 +24,24 @@ public class ScoreboardImpl implements Scoreboard {
     }
 
     @Override
-    public Game finishGame(UUID gameId) throws GameNotPresentException { //todo ogarnąć wyjątki
+    public Game finishGame(UUID gameId) throws GameNotPresentException {
         Game game = findGameById(gameId);
         gameList.remove(game);
         return game;
     }
 
     @Override
-    public void updateScore(UUID gameId, int homeScore, int awayScore) throws GameNotPresentException {
+    public void updateScore(UUID gameId, int homeScore, int awayScore) throws GameNotPresentException, NegativeScoreException {
         Game game = findGameById(gameId);
         game.getScore().updateScore(homeScore, awayScore);
     }
 
     @Override
     public List<Game> getSummaryByTotalScore() {
-        return gameList.stream()
-                .sorted(Comparator.comparing(Game::getScore, Comparator.comparingInt(Score::getSum))
-                        .thenComparing(Game:: getTimeAdded).reversed())
+       return gameList.stream()
+                .sorted(Comparator.comparing(Game::getScore, Comparator.comparingInt(Score::getSum)).reversed()
+                        .thenComparing(Game::getSequenceNumber, Comparator.reverseOrder())
+                )
                 .toList();
     }
 
@@ -46,6 +51,9 @@ public class ScoreboardImpl implements Scoreboard {
                 .findAny();
         if (gameExists.isPresent()) {
             return gameExists.get();
-        } else throw new GameNotPresentException();
+        } else {
+            throw new GameNotPresentException(
+                    MessageFormat.format("Game with UUID {0} is not present on scoreboard", gameId));
+        }
     }
 }

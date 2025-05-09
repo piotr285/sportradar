@@ -2,20 +2,21 @@ package com.example.sportradar.demo;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Game {
-
+    private static final AtomicLong idGenerator = new AtomicLong();
     private final UUID uniqueGameId;
     private final Team homeTeam;
     private final Team awayTeam;
-    private final Instant timeAdded;
+    private final long sequenceNumber;
     private Score score;
 
     public Game(Team homeTeam, Team awayTeam) {
         this.uniqueGameId = UUID.randomUUID();
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
-        this.timeAdded = Instant.now();
+        this.sequenceNumber = idGenerator.incrementAndGet();
         this.score = new Score();
     }
 
@@ -31,8 +32,8 @@ public class Game {
         return awayTeam;
     }
 
-    public Instant getTimeAdded() {
-        return timeAdded;
+    public long getSequenceNumber() {
+        return sequenceNumber;
     }
 
     public Score getScore() {
