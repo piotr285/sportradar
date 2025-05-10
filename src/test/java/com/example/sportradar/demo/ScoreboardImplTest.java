@@ -98,10 +98,6 @@ public class ScoreboardImplTest {
         }
         List<Game> result = scoreboard.getSummaryByTotalScore();
 
-        for (Game game : result) {
-            System.out.println(game.getHomeTeam());
-            System.out.println(game.getSequenceNumber());
-        }
         for (int i = 0; i < expectedOrder.size(); i++) {
             int expectedIndex = expectedOrder.get(i);
             assertEquals(gameIds.get(expectedIndex), result.get(i).getUniqueGameId(),
