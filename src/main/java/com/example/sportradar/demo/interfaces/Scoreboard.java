@@ -1,5 +1,7 @@
-package com.example.sportradar.demo;
+package com.example.sportradar.demo.interfaces;
 
+import com.example.sportradar.demo.entities.Game;
+import com.example.sportradar.demo.entities.Team;
 import com.example.sportradar.demo.exceptions.GameNotPresentException;
 import com.example.sportradar.demo.exceptions.NegativeScoreException;
 

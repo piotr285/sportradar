@@ -1,5 +1,7 @@
 package com.example.sportradar.demo;
 
+import com.example.sportradar.demo.entities.Game;
+import com.example.sportradar.demo.entities.Team;
 import com.example.sportradar.demo.exceptions.GameNotPresentException;
 import com.example.sportradar.demo.exceptions.NegativeScoreException;
 import org.junit.jupiter.api.DisplayName;

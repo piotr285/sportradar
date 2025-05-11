@@ -1,6 +1,8 @@
-package com.example.sportradar.demo;
+package com.example.sportradar.demo.entities;
 
-import java.time.Instant;
+import com.example.sportradar.demo.ScoreImpl;
+import com.example.sportradar.demo.interfaces.Score;
+
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,7 +19,7 @@ public class Game {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.sequenceNumber = idGenerator.incrementAndGet();
-        this.score = new Score();
+        this.score = new ScoreImpl();
     }
 
     public UUID getUniqueGameId() {

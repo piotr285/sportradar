@@ -10,7 +10,7 @@ public class ScoreTest {
 
     @Test
     void updateScore() throws NegativeScoreException {
-        Score score = new Score();
+        ScoreImpl score = new ScoreImpl();
         int homeScore = 1;
         int awayScore = 2;
         score.updateScore(homeScore, awayScore);
@@ -20,7 +20,7 @@ public class ScoreTest {
 
     @Test
     void updateScore_NegativeScoreException_homeScore() {
-        Score score = new Score();
+        ScoreImpl score = new ScoreImpl();
         int homeScore = -1;
         int awayScore = 2;
         assertThrows(NegativeScoreException.class, () ->
@@ -29,7 +29,7 @@ public class ScoreTest {
 
     @Test
     void updateScore_NegativeScoreException_awayScore() {
-        Score score = new Score();
+        ScoreImpl score = new ScoreImpl();
         int homeScore = 1;
         int awayScore = -2;
         assertThrows(NegativeScoreException.class, () ->

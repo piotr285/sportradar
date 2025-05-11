@@ -1,7 +1,11 @@
 package com.example.sportradar.demo;
 
+import com.example.sportradar.demo.entities.Game;
+import com.example.sportradar.demo.entities.Team;
 import com.example.sportradar.demo.exceptions.GameNotPresentException;
 import com.example.sportradar.demo.exceptions.NegativeScoreException;
+import com.example.sportradar.demo.interfaces.Score;
+import com.example.sportradar.demo.interfaces.Scoreboard;
 
 import java.text.MessageFormat;
 import java.util.Comparator;

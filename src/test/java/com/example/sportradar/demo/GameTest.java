@@ -1,10 +1,11 @@
 package com.example.sportradar.demo;
 
+import com.example.sportradar.demo.entities.Game;
+import com.example.sportradar.demo.entities.Team;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
 
